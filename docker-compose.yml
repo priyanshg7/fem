@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  simustruct-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: simustruct-platform:v1.0.0
+    container_name: simustruct_twin
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - DEBUG=False
+      - ACTIVE_FORWARD_MODEL_ID=forward_ensemble_stage3b
+      - ACTIVE_INVERSE_MODEL_ID=inverse_unet_d5_stage3d
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000","http://localhost:8000","http://127.0.0.1:8000"]
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    volumes:
+      - ./reports:/app/reports
+
