@@ -1,0 +1,36 @@
+{
+  "test": {
+    "MAE_X_mm": 4.424716492366721,
+    "MAE_Y_mm": 3.6123190283563846,
+    "RMSE_X_mm": 7.936054773862483,
+    "RMSE_Y_mm": 7.533343687148348,
+    "Mean_Euclidean_mm": 6.310479338284184,
+    "Median_Euclidean_mm": 5.505239623116156,
+    "P95_Euclidean_mm": 11.23923141459889,
+    "Max_Euclidean_mm": 181.14870877731894,
+    "Pct_within_5mm": 44.0,
+    "Pct_within_10mm": 92.2,
+    "Pct_within_25mm": 99.3,
+    "Pct_within_50mm": 99.6,
+    "Pct_within_100mm": 99.6,
+    "N_samples": 1000,
+    "Mean_Uncertainty_Radius_mm": 3.3436945945926317
+  },
+  "confirmatory": {
+    "MAE_X_mm": 9.484320273856994,
+    "MAE_Y_mm": 8.09547335250291,
+    "RMSE_X_mm": 40.41265662691902,
+    "RMSE_Y_mm": 32.98154585367564,
+    "Mean_Euclidean_mm": 13.362592122824918,
+    "Median_Euclidean_mm": 5.793116293484214,
+    "P95_Euclidean_mm": 21.55923185639242,
+    "Max_Euclidean_mm": 573.8356661610921,
+    "Pct_within_5mm": 38.800000000000004,
+    "Pct_within_10mm": 87.0,
+    "Pct_within_25mm": 96.0,
+    "Pct_within_50mm": 97.39999999999999,
+    "Pct_within_100mm": 98.2,
+    "N_samples": 500,
+    "Mean_Uncertainty_Radius_mm": 6.097419192219084
+  }
+}

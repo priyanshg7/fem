@@ -5,14 +5,19 @@ output/
 demo_matrices/*.npz
 demo_matrices/*.npy
 
-# Machine Learning Checkpoints and Weights (> 100MB blocked by GitHub)
-models/
+# Machine Learning Checkpoints and Weights
+models/stage2V_preliminary/
+models/stage3A_forward_ann/
+models/stage3AR_forward_improved/
+models/stage3C_inverse_localization/
+models/stage3D_closeout/
+models/stage3E/
+models/stage3D_spatial_inverse/*.joblib
+
 *.joblib
-*.pkl
 *.pickle
 *.h5
 *.hdf5
-*.pt
 *.pth
 *.onnx
 

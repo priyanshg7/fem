@@ -1,0 +1,34 @@
+{
+  "NC1_geometry_only": {
+    "MAE_X_mm": 272.5837702533001,
+    "MAE_Y_mm": 223.82852580977843,
+    "RMSE_X_mm": 319.74894328905333,
+    "RMSE_Y_mm": 267.31528916769435,
+    "Mean_Euclidean_mm": 383.8903951660351,
+    "Median_Euclidean_mm": 373.8223127954882,
+    "P95_Euclidean_mm": 670.8149486753503,
+    "Max_Euclidean_mm": 964.3540314886502,
+    "Pct_within_5mm": 0.05,
+    "Pct_within_10mm": 0.05,
+    "Pct_within_25mm": 0.15,
+    "Pct_within_50mm": 0.5,
+    "Pct_within_100mm": 3.35,
+    "N_samples": 2000
+  },
+  "NC2_shuffled_stresses": {
+    "MAE_X_mm": 240.5985848403733,
+    "MAE_Y_mm": 196.0747569461185,
+    "RMSE_X_mm": 277.2938648972527,
+    "RMSE_Y_mm": 230.04553000045598,
+    "Mean_Euclidean_mm": 336.6567906404323,
+    "Median_Euclidean_mm": 339.9803123607026,
+    "P95_Euclidean_mm": 535.0775281897768,
+    "Max_Euclidean_mm": 655.7447564229797,
+    "Pct_within_5mm": 0.0,
+    "Pct_within_10mm": 0.05,
+    "Pct_within_25mm": 0.2,
+    "Pct_within_50mm": 0.6,
+    "Pct_within_100mm": 3.5999999999999996,
+    "N_samples": 2000
+  }
+}
