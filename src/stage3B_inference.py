@@ -8,6 +8,7 @@ Provides unified inference interface for:
 """
 
 import os
+import gc
 from pathlib import Path
 from typing import Dict, Any, List, Union, Optional
 import numpy as np
@@ -118,9 +119,9 @@ class ForwardStressEnsemblePredictor:
         self.resmlp.load_state_dict(torch.load(self.models_dir / "baseline_ResMLP.pt", map_location='cpu'))
         self.resmlp.eval()
         
-        self.rf = joblib.load(self.models_dir / "baseline_RandomForest.pkl")
-        self.et = joblib.load(self.models_dir / "baseline_ExtraTrees.pkl")
-        self.hgb = joblib.load(self.models_dir / "baseline_HistGradientBoosting.pkl")
+        self._rf = None
+        self._et = None
+        self._hgb = None
         
         # Load meta learners
         self.meta_dnn = joblib.load(self.models_dir / "meta_framework1_dnn_ridge.pkl")
@@ -128,7 +129,32 @@ class ForwardStressEnsemblePredictor:
         self.pca = joblib.load(self.models_dir / "meta_framework2_pca.pkl")
         self.pca_scaler = joblib.load(self.models_dir / "meta_framework2_pca_scaler.pkl")
         self.meta_het = joblib.load(self.models_dir / "meta_framework4_heterogeneous.pkl")
-        
+        gc.collect()
+
+    @property
+    def rf(self):
+        """Lazy cached loader for RandomForestRegressor."""
+        if self._rf is None:
+            self._rf = joblib.load(self.models_dir / "baseline_RandomForest.pkl")
+            gc.collect()
+        return self._rf
+
+    @property
+    def et(self):
+        """Lazy cached loader for ExtraTreesRegressor."""
+        if self._et is None:
+            self._et = joblib.load(self.models_dir / "baseline_ExtraTrees.pkl")
+            gc.collect()
+        return self._et
+
+    @property
+    def hgb(self):
+        """Lazy cached loader for HistGradientBoostingRegressor."""
+        if self._hgb is None:
+            self._hgb = joblib.load(self.models_dir / "baseline_HistGradientBoosting.pkl")
+            gc.collect()
+        return self._hgb
+
     def _extract_features(
         self,
         plate_length_mm: float,

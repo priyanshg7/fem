@@ -68,7 +68,7 @@ if frontend_dist.exists() and (frontend_dist / "assets").exists():
     logger.info(f"Mounting compiled frontend SPA assets from: {frontend_dist / 'assets'}")
     app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="static_assets")
 
-@app.get("/", tags=["Root"])
+@app.api_route("/", methods=["GET", "HEAD"], tags=["Root"])
 def root(request: Request):
     accept = request.headers.get("accept", "")
     # If a browser requests HTML at root, serve compiled React index.html

@@ -10,8 +10,9 @@ from backend.app.services.registry import model_registry
 
 router = APIRouter()
 
-@router.get(
+@router.api_route(
     "/health",
+    methods=["GET", "HEAD"],
     response_model=HealthResponse,
     summary="Service Health and Model Status",
     description="Reports the overall health of the service and detailed loading readiness for all registered ML models."

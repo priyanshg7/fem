@@ -19,6 +19,7 @@ import { useBackendStatus } from './hooks/useBackendStatus';
 import { useForwardAnalysis } from './hooks/useForwardAnalysis';
 import { caseHistoryService, generateCaseId } from './services/caseHistory';
 import { CaseRecord } from './api/types';
+import { apiClient } from './api/client';
 
 export const App: React.FC = () => {
   const [currentWorkspace, setCurrentWorkspace] = useState<WorkspaceType>('forward');
@@ -116,8 +117,12 @@ export const App: React.FC = () => {
         <div style={{ padding: '10px 24px 0 24px' }}>
           <Alert type="danger" code="BACKEND_UNAVAILABLE">
             {backendError ? `${backendError}. ` : ''}Cannot reach SimuStruct Backend service at{' '}
-            <code>http://localhost:8000/api/v1</code>. Please launch the backend with{' '}
-            <code>python backend/run_server.py</code> to execute surrogate predictions.
+            <code>{apiClient.getBaseUrl()}</code>.
+            {typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? (
+              <span> Please launch the backend with <code>python backend/run_server.py</code> to execute surrogate predictions.</span>
+            ) : (
+              <span> If using free-tier cloud hosting (Render), please wait 30-50 seconds for the backend instance to spin up from idle.</span>
+            )}
           </Alert>
         </div>
       )}

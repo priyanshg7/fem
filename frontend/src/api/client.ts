@@ -15,11 +15,29 @@ import {
   InversePredictionResponse,
 } from './types';
 
-// Detect API base URL safely across Vite browser and Node.js test environments
-const API_BASE_URL =
-  (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL) ||
-  (typeof globalThis !== 'undefined' && (globalThis as any).process?.env?.VITE_API_URL) ||
-  '/api/v1';
+// Safe production and development API base URL resolution
+const DEFAULT_PROD_API = 'https://fem-backend-ydrr.onrender.com/api/v1';
+
+export const getBaseUrl = (): string => {
+  // 1. Explicit build/runtime environment variable override
+  if (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL) {
+    return (import.meta as any).env.VITE_API_URL;
+  }
+  if (typeof globalThis !== 'undefined' && (globalThis as any).process?.env?.VITE_API_URL) {
+    return (globalThis as any).process.env.VITE_API_URL;
+  }
+  // 2. In browser: if deployed on Vercel or any cloud domain (not local dev)
+  if (typeof window !== 'undefined' && window.location) {
+    const host = window.location.hostname;
+    if (host !== 'localhost' && host !== '127.0.0.1' && !host.startsWith('192.168.')) {
+      return DEFAULT_PROD_API;
+    }
+  }
+  // 3. Local development proxy fallback
+  return '/api/v1';
+};
+
+export const API_BASE_URL = getBaseUrl();
 
 export class ApiError extends Error {
   public status: number;
@@ -87,6 +105,8 @@ async function request<T>(
 }
 
 export const apiClient = {
+  getBaseUrl: () => API_BASE_URL,
+
   // 1. Health & Readiness
   getHealth: () => request<HealthResponse>('/health'),
   getReadiness: () => request<ReadinessResponse>('/readiness'),
