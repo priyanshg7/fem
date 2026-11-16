@@ -1,5 +1,6 @@
 # Large Datasets and Simulation Caches
-data/
+/data/
+!frontend/src/data/
 output/
 demo_matrices/*.npz
 demo_matrices/*.npy
