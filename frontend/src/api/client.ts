@@ -85,9 +85,14 @@ async function request<T>(
     }
 
     if (!response.ok) {
-      const message = data?.detail?.message || data?.message || `HTTP Error ${response.status}`;
-      const code = data?.detail?.code || data?.code || `HTTP_${response.status}`;
-      const details = data?.detail?.details || data?.details || [];
+      const message =
+        data?.error?.message ||
+        data?.detail?.message ||
+        data?.message ||
+        (typeof data?.detail === 'string' ? data.detail : null) ||
+        `HTTP Error ${response.status}`;
+      const code = data?.error?.code || data?.detail?.code || data?.code || `HTTP_${response.status}`;
+      const details = data?.error?.details || data?.detail?.details || data?.details || [];
       throw new ApiError(response.status, message, code, details);
     }
 
