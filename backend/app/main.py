@@ -1,10 +1,16 @@
 """
 SimuStruct ML Surrogate Backend Service: Main FastAPI Application Entrypoint.
 """
+import gc
 import logging
+import torch
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# Optimize CPU threads and memory footprint for low-memory container environments
+torch.set_num_threads(1)
+gc.collect()
 
 from backend.app.core.config import settings
 from backend.app.core.errors import (
