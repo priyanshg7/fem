@@ -233,20 +233,22 @@ class ForwardStressEnsemblePredictor:
             p_et = p_res
             p_hgb = p_d1
         else:
-            p_rf = float(self.rf.predict(X_norm)[0])
             p_et = float(self.et.predict(X_norm)[0])
             p_hgb = float(self.hgb.predict(X_norm)[0])
-            base_preds = np.array([p_ann, p_d1, p_d2, p_res, p_rf, p_et, p_hgb], dtype=np.float32).reshape(1, -1)
             
             if "pca" in fw:
+                p_rf = float(self.rf.predict(X_norm)[0])
+                base_preds = np.array([p_ann, p_d1, p_d2, p_res, p_rf, p_et, p_hgb], dtype=np.float32).reshape(1, -1)
                 z_norm = self.pca_scaler.transform(base_preds)
                 k_comp = getattr(self.meta_pca, "n_features_in_", 5)
                 z_pca = self.pca.transform(z_norm)[:, :k_comp]
                 pred_kt = float(self.meta_pca.predict(z_pca)[0])
                 active_members = [p_ann, p_d1, p_d2, p_res, p_rf, p_et, p_hgb]
             else:  # Default: heterogeneous
-                pred_kt = float(self.meta_het.predict(base_preds[:, [2, 3, 4, 5, 6]])[0])
-                active_members = [p_d2, p_res, p_rf, p_et, p_hgb]
+                p_rf = p_d2  # zero weight in meta_het, omit unpickling to conserve RAM
+                base_het = np.array([[0.0, 0.0, 0.0, p_et, p_hgb]], dtype=np.float32)
+                pred_kt = float(self.meta_het.predict(base_het)[0])
+                active_members = [p_d2, p_res, p_et, p_hgb]
             gc.collect()
             
         pred_stress_psi = pred_kt * applied_traction_psi

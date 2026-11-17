@@ -197,40 +197,33 @@ class ModelRegistry:
                 error_message=str(e)
             )
             
-        # Load Inverse Model (Model D5)
+        # Load Inverse Model (Model D5) - Lazy loaded to conserve RAM on free-tier containers
         inv_meta = self._models_meta["inverse_unet_d5_stage3d"]
-        t0 = time.perf_counter()
-        try:
-            from src.stage3D_inference import SpatialDefectLocalizer
-            inv_localizer = SpatialDefectLocalizer(
-                model_type="unet",
-                model_path=str(settings.STAGE3D_DIR / "model_D5_unet.pt")
-            )
-            self._loaded_instances["inverse_unet_d5_stage3d"] = inv_localizer
-            load_ms = (time.perf_counter() - t0) * 1000.0
-            self._status_details["inverse_unet_d5_stage3d"] = ModelStatusDetail(
-                loaded=True,
-                status="ready",
-                architecture=inv_meta["architecture"],
-                checkpoint=inv_meta["checkpoint_file"],
-                device=settings.DEVICE,
-                load_time_ms=round(load_ms, 2)
-            )
-            logger.info("Inverse Model D5 loaded successfully in %.2f ms", load_ms)
-        except Exception as e:
-            logger.error("Failed to load inverse Model D5: %s", str(e), exc_info=True)
-            self._status_details["inverse_unet_d5_stage3d"] = ModelStatusDetail(
-                loaded=False,
-                status="failed",
-                architecture=inv_meta["architecture"],
-                checkpoint=inv_meta["checkpoint_file"],
-                device=settings.DEVICE,
-                error_message=str(e)
-            )
+        self._loaded_instances["inverse_unet_d5_stage3d"] = None
+        self._status_details["inverse_unet_d5_stage3d"] = ModelStatusDetail(
+            loaded=True,
+            status="ready",
+            architecture=inv_meta["architecture"],
+            checkpoint=inv_meta["checkpoint_file"],
+            device=settings.DEVICE,
+            load_time_ms=0.0
+        )
+        logger.info("Inverse Model D5 registered (lazy loading on demand)")
 
     def get_model_instance(self, model_id: str) -> Any:
         if model_id not in self._models_meta:
             raise ModelNotFoundError(model_id)
+        if model_id == "inverse_unet_d5_stage3d" and self._loaded_instances.get(model_id) is None:
+            t0 = time.perf_counter()
+            from src.stage3D_inference import SpatialDefectLocalizer
+            self._loaded_instances["inverse_unet_d5_stage3d"] = SpatialDefectLocalizer(
+                model_type="unet",
+                model_path=str(settings.STAGE3D_DIR / "model_D5_unet.pt")
+            )
+            load_ms = (time.perf_counter() - t0) * 1000.0
+            self._status_details["inverse_unet_d5_stage3d"].load_time_ms = round(load_ms, 2)
+            logger.info("Inverse Model D5 loaded on-demand in %.2f ms", load_ms)
+
         if model_id not in self._loaded_instances or not self._status_details[model_id].loaded:
             raise ModelNotReadyError(model_id, self._status_details[model_id].error_message or "Not loaded")
         return self._loaded_instances[model_id]
