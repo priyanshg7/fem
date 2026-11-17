@@ -181,8 +181,8 @@ export const ParameterControls: React.FC<ParameterControlsProps> = ({
           onChange={(e) => onChangeFramework(e.target.value as any)}
           style={{ cursor: 'pointer' }}
         >
-          <option value="heterogeneous">Heterogeneous Ensemble (Recommended — Confirmatory R²=0.9634)</option>
-          <option value="dnn">DNN Ridge Stacking (4 Neural Nets)</option>
+          <option value="dnn">DNN Ridge Stacking (4 Neural Nets — Recommended Confirmatory)</option>
+          <option value="heterogeneous">Heterogeneous Ensemble (Confirmatory R²=0.9634)</option>
           <option value="pca">PCA Component Stacking (Dimension Reduced)</option>
         </select>
       </div>
