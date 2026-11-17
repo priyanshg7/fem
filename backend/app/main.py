@@ -89,7 +89,7 @@ def root(request: Request):
         "documentation": "/docs",
         "api_v1": settings.API_V1_STR,
         "health_check": f"{settings.API_V1_STR}/health",
-        "deploy_version": "v2-optimized-340mb"
+        "deploy_version": "v3-fixed-numpy"
     }
 
 if __name__ == "__main__":

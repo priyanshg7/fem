@@ -29,7 +29,7 @@ def get_health(response: Response) -> HealthResponse:
         version=settings.API_VERSION,
         timestamp=datetime.now(timezone.utc).isoformat(),
         environment=settings.ENVIRONMENT,
-        deploy_version="v2-optimized-340mb",
+        deploy_version="v3-fixed-numpy",
         active_forward_model=settings.ACTIVE_FORWARD_MODEL_ID,
         active_inverse_model=settings.ACTIVE_INVERSE_MODEL_ID,
         models=health_info["models"]
