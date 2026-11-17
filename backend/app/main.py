@@ -88,7 +88,8 @@ def root(request: Request):
         "status": "online",
         "documentation": "/docs",
         "api_v1": settings.API_V1_STR,
-        "health_check": f"{settings.API_V1_STR}/health"
+        "health_check": f"{settings.API_V1_STR}/health",
+        "deploy_version": "v2-optimized-340mb"
     }
 
 if __name__ == "__main__":

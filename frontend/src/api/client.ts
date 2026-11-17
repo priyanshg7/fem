@@ -56,7 +56,7 @@ export class ApiError extends Error {
 async function request<T>(
   endpoint: string,
   options: RequestInit = {},
-  timeoutMs = 15000
+  timeoutMs = 45000
 ): Promise<T> {
   const url = `${API_BASE_URL.replace(/\/$/, '')}/${endpoint.replace(/^\//, '')}`;
   const controller = new AbortController();
@@ -95,7 +95,7 @@ async function request<T>(
   } catch (err: any) {
     clearTimeout(timer);
     if (err.name === 'AbortError') {
-      throw new ApiError(408, 'Request timed out after 15 seconds.', 'TIMEOUT');
+      throw new ApiError(408, `Request timed out after ${Math.round(timeoutMs / 1000)} seconds. If using Render Free tier, the instance may be waking from idle sleep.`, 'TIMEOUT');
     }
     if (err instanceof ApiError) {
       throw err;
@@ -108,31 +108,31 @@ export const apiClient = {
   getBaseUrl: () => API_BASE_URL,
 
   // 1. Health & Readiness
-  getHealth: () => request<HealthResponse>('/health'),
-  getReadiness: () => request<ReadinessResponse>('/readiness'),
+  getHealth: () => request<HealthResponse>('/health', {}, 15000),
+  getReadiness: () => request<ReadinessResponse>('/readiness', {}, 15000),
 
   // 2. Model Registry
-  getModels: () => request<ModelSummary[]>('/models'),
-  getModelDetail: (modelId: string) => request<ModelDetail>(`/models/${encodeURIComponent(modelId)}`),
+  getModels: () => request<ModelSummary[]>('/models', {}, 20000),
+  getModelDetail: (modelId: string) => request<ModelDetail>(`/models/${encodeURIComponent(modelId)}`, {}, 20000),
 
   // 3. Geometry Validation
   validateGeometry: (data: GeometryValidationRequest) =>
     request<GeometryValidationResponse>('/validate/geometry', {
       method: 'POST',
       body: JSON.stringify(data),
-    }),
+    }, 20000),
 
-  // 4. Forward Stress Prediction
+  // 4. Forward Stress Prediction (ML Ensemble — up to 60s for cold start)
   predictForward: (data: ForwardPredictionRequest) =>
     request<ForwardPredictionResponse>('/predict/forward', {
       method: 'POST',
       body: JSON.stringify(data),
-    }),
+    }, 60000),
 
-  // 5. Inverse Defect Localization (Model D5 U-Net)
+  // 5. Inverse Defect Localization (Model D5 U-Net — up to 60s for cold start)
   predictInverse: (data: InversePredictionRequest) =>
     request<InversePredictionResponse>('/predict/inverse', {
       method: 'POST',
       body: JSON.stringify(data),
-    }),
+    }, 60000),
 };

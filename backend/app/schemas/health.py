@@ -22,6 +22,7 @@ class HealthResponse(BaseModel):
     environment: str
     active_forward_model: str
     active_inverse_model: str
+    deploy_version: Optional[str] = "v2-optimized-340mb"
     models: Dict[str, ModelStatusDetail]
 
 class ReadinessResponse(BaseModel):
